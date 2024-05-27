@@ -5,6 +5,7 @@ import org.choongang.main.MainRouter;
 import org.choongang.template.Templates;
 
 import java.util.Scanner;
+import java.util.function.Predicate;
 
 public abstract class AbstractController implements Controller{
 
@@ -18,6 +19,7 @@ public abstract class AbstractController implements Controller{
      * 상단 공통 출력 부분 (고정된 부분)
      */
     public void common(){
+        System.out.print(Templates.getInstance().doubleLine());
         System.out.println("학생 관리 프로그램 Ver1.0");
         System.out.println(Templates.getInstance().doubleLine());
     }
@@ -28,7 +30,6 @@ public abstract class AbstractController implements Controller{
      * - 숫자 : 메뉴 항목
      */
     public void prompt(){
-        System.out.println(Templates.getInstance().doubleLine());
         System.out.print("메뉴 선택: ");
         String menu = sc.nextLine();
         if(menu.equals("q") || menu.equals("quit") || menu.equals("exit")){
@@ -50,9 +51,9 @@ public abstract class AbstractController implements Controller{
      */
     @Override
     public void run() {//실행절차부분 - 절대 바뀌면 안되는 절차이므로 final
-        common(); //공통
+        common();
         show();//재정의 - 각 컨트롤마다 다르게 정의 (추상클래스를 상속받는 프롬프터가 각각 다르게 구성)
-        prompt(); //공통
+        prompt();
     }
 
     private void change(int menuNo){
@@ -72,4 +73,18 @@ public abstract class AbstractController implements Controller{
     //new MainRouter().change(menu);
     //메뉴 전환할때마다 객체 생성? 메모리 소비가 많아지고 성능 저하
     // -> 싱글톤 형태로 한 번만 생성하여 공유하는 방식을 사용한다!
+
+    /**
+     * 입력과 검증을 함께 진행
+     * @param message : 항목 메세지
+     * @param predicate : 판별식
+     */
+    protected String promptWithValidation(String message, Predicate<String> predicate) {
+        String str = null;
+        do {
+            System.out.print(message);
+            str = sc.nextLine();
+        } while (!predicate.test(str)); //판별식이 실패했을 때는 반복 실행(다시 입력)
+        return str;
+    }
 }
