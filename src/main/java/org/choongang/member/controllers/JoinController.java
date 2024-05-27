@@ -1,8 +1,11 @@
 package org.choongang.member.controllers;
 
 import org.choongang.global.AbstractController;
+import org.choongang.global.Router;
+import org.choongang.global.Service;
 import org.choongang.global.constants.Menu;
 import org.choongang.main.MainRouter;
+import org.choongang.member.services.MemberServiceLocator;
 import org.choongang.template.Templates;
 
 import java.sql.SQLOutput;
@@ -38,10 +41,18 @@ public class JoinController extends AbstractController{
                 .userNm(userNm)
                 .build();
 
-        //회원 가입 처리...
-        System.out.println(form);
-        //회원 가입 성공 시 -> 로그인 화면
-        MainRouter.getInstance().change(Menu.LOGIN);
+        Router router = MainRouter.getInstance();
+        try {
+            //회원 가입 처리...
+            Service service = MemberServiceLocator.getInstance().find(Menu.JOIN);
+            service.process(form);
 
+            //회원 가입 성공 시 -> 로그인 화면
+            router.change(Menu.LOGIN);
+        } catch (RuntimeException e){
+            //회원 가입 실패 시 -> 회원가입 화면으로 이동
+            System.err.println(e.getMessage());
+            router.change(Menu.JOIN);
+        }
     }
 }
