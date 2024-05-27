@@ -33,9 +33,9 @@ public class Templates {
             return tpl;
         }
         switch (menu){
-            case JOIN: tpl = new JoinTpl();
-            case LOGIN: tpl = new LoginTpl();
-            case MYPAGE: tpl = new MypageTpl();
+            case JOIN: tpl = new JoinTpl(); break;
+            case LOGIN: tpl = new LoginTpl(); break;
+            case MYPAGE: tpl = new MypageTpl(); break;
             default: tpl = new MainTpl();
         }
         tpls.put(menu, tpl);
@@ -47,6 +47,6 @@ public class Templates {
     }
 
     public String doubleLine(){
-        return "=========================\n";
+        return "========================\n";
     }
 }
